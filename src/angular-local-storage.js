@@ -148,8 +148,8 @@ angularLocalStorage.provider('localStorageService', function() {
 
     // Directly get a value from local storage
     // Example use: localStorageService.get('library'); // returns 'angular'
-    var getFromLocalStorage = function (key) {
-
+    var getFromLocalStorage = function (key, default) {
+      default = default || null;
       if (!browserSupportsLocalStorage || self.storageType === 'cookie') {
         if (!browserSupportsLocalStorage) {
           $rootScope.$broadcast('LocalStorageModule.notification.warning','LOCAL_STORAGE_NOT_SUPPORTED');
@@ -161,8 +161,9 @@ angularLocalStorage.provider('localStorageService', function() {
       var item = webStorage ? webStorage.getItem(deriveQualifiedKey(key)) : null;
       // angular.toJson will convert null to 'null', so a proper conversion is needed
       // FIXME not a perfect solution, since a valid 'null' string can't be stored
+      // Why not undefined?
       if (!item || item === 'null') {
-        return null;
+        return default;
       }
 
       try {
